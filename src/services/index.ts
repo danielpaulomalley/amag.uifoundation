@@ -1,0 +1,1 @@
+export { default as AmagUIService } from './amag.ui.service'
