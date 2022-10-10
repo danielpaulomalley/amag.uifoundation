@@ -1,5 +1,6 @@
 export enum AMAGModule {
-  IDM = 1,
+  CORE = 1,
+  IDM,
   CAC,
   VMS,
   SAMA

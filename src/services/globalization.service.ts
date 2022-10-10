@@ -23,6 +23,7 @@ const DEFAULT_MESSAGES_LOCALE = "en-US";
 
 
 const JSON_URLS: {[key in AMAGModule]: string} = {
+  [AMAGModule.CORE]: "", // no ui
   [AMAGModule.IDM]: "/globalization/idm/ui/",
   [AMAGModule.CAC]: "/globalization/cac/ui/",
   [AMAGModule.VMS]: "/globalization/vms/ui/",
@@ -135,7 +136,8 @@ export default class GlobalizationService {
   }
 
   private _fetchJSON(url: string) {
-    return fetch(url, { method: "GET", mode: "cors"})
+    const ts = Date.now()
+    return fetch(`${url}?${ts}`, { method: "GET", mode: "cors"})
       .then(resp => {
         if (!resp.ok) throw new Error("error fetching globalization data")
         return resp.json()

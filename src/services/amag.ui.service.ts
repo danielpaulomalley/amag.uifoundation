@@ -1,4 +1,5 @@
 import { AMAGModule } from "../models"
+import ApiService from "./api.service"
 import ConfigurationService from "./configuration.service"
 import GlobalizationService from "./globalization.service"
 
@@ -37,11 +38,14 @@ const data = {
   idmApiRoot: `${apiBase}/G4S.IdentityManagement.WebApi/api/`,
   coreApiRoot: `${apiBase}/G4S.Core.WebApi/api/`,
   symmetryApiRoot: `${apiBase}/AMAG.Symmetry.WebApi/api/`,
+  samaApiRoot: `${apiBase}/AMAG.SAMA.WebApi/api/`,
   activeLocale: getUrlParamValue("language"),
   cdnUrl: getUrlParamValue("cdnUrl"),
   globalizationCacheKey: getUrlParamValue("globalizationCacheKey"),
   themePath: getUrlParamValue("themePath")
 }
+
+const apiService = new ApiService(data.idmApiRoot, data.cacApiRoot, data.vmsApiRoot, data.coreApiRoot, data.samaApiRoot)
 
 const Service = {
   init: (module: AMAGModule) => {
@@ -60,7 +64,12 @@ const Service = {
 
   getMessageOnly: (key: string, params?: string[] | Object | string, formatter?: (str: string) => string) => {
     return globalizationService.getMessage(key, params, formatter).message
-  }
+  },
+
+
+  get: (module: AMAGModule, path: string) => apiService.get(module, path),
+  post: (module: AMAGModule, path: string) => apiService.post(module, path)
+
 }
 
 // load theme styles as soon as UIService is used

@@ -1,19 +1,90 @@
+* { box-sizing: border-box; }
+
 html, body {
   height: 100%;
   padding: 0;
   margin: 0;
   font-family: sans-serif;
 }
+#root { height: 100%; overflow: hidden; }
+h1, h2, h3 {
+  color: #024f5d;
+}
+h2 { font-size: 1.75rem; }
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 4px;
+  margin-bottom: 2px;
+  line-height: 1.1;
+  font-weight: 500;
+}
 .navbar-default {
   background-color: #186473;
   font-family: sans-serif;
   font-size: 14px;
+  ul { padding: 0; margin: 0; }
+  li { display: inline-block; }
+  i {
+    font-size: 16px;
+    margin-right: 5px;
+  }
   a {
     display: inline-block;
     padding: 15px 15px 17px 15px;
     color: #FFF;
     text-decoration: none;
     &:hover { background-color: #414141; }
-    &:active { background-color: #414141; }
+    &.active { background-color: #414141; }
+  }
+}
+
+.amag-app-outer {
+  // should be top level with only TopNavigation and div.amag-body-outer elements as direct descendants
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  .amag-body-outer {
+    flex-grow: 1;
+    overflow: auto;
+  }
+  .page-header { padding: 0 15px; }
+
+}
+
+
+
+.amag-form-row {
+  margin-bottom: 15px;
+
+}
+
+.amag-form-element {
+  display: inline-block;
+  label {
+    display: block;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+}
+
+.amag-form-control {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: .43rem .85rem;
+  line-height: 1.4;
+  width: 100%;
+
+  &:focus, &:focus-visible {
+    outline: none;
+    border-color: #5ca7b5;
+    box-shadow: 0 0 2px 2px rgba(92, 167, 181, .6);
+  }
+}
+
+//media
+@media (max-width: 767px) {
+  .hidden-xs {
+    display: none!important;
   }
 }
