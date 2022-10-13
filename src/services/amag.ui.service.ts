@@ -1,6 +1,6 @@
 import { AMAGModule } from "../models"
 import ApiService from "./api.service"
-import ConfigurationService from "./configuration.service"
+import ConfigurationService, { IDMConfiguration } from "./configuration.service"
 import GlobalizationService from "./globalization.service"
 
 const apiBase = `//${window.location.host}`
@@ -46,11 +46,13 @@ const data = {
 }
 
 const apiService = new ApiService(data.idmApiRoot, data.cacApiRoot, data.vmsApiRoot, data.coreApiRoot, data.samaApiRoot)
+let idmConfig: IDMConfiguration
 
 const Service = {
   init: (module: AMAGModule) => {
     return new Promise<void>((resolve) => {
       configurationService.getIDMConfiguration(data.idmApiRoot).subscribe(config => {
+        idmConfig = config
         if (!data.activeLocale) data.activeLocale = config.UserLanguage ?? "en-US"
         if (!data.cdnUrl) data.cdnUrl = config.CdnUrl
         globalizationService.init(data.cdnUrl, module, data.activeLocale).then(() => resolve())
@@ -68,7 +70,9 @@ const Service = {
 
 
   get: (module: AMAGModule, path: string) => apiService.get(module, path),
-  post: (module: AMAGModule, path: string) => apiService.post(module, path)
+  post: (module: AMAGModule, path: string) => apiService.post(module, path),
+
+  getConfiguration: () => idmConfig
 
 }
 

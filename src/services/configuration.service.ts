@@ -1,7 +1,7 @@
 import { Observable, Subject, of } from 'rxjs'
 import { AMAGModule } from '../models'
 
-interface IDMConfiguration {
+export interface IDMConfiguration {
   AddressTypes: {Name: string, Value: string, IsLeftToRight: boolean}[]
   AllowImpersonation: boolean
   CdnUrl: string
@@ -10,11 +10,16 @@ interface IDMConfiguration {
   GroupId: string
   UseEmailAddressAsUserName: boolean
   UserLanguage: string
+  UdfDefinitions: { Id: string, Name: string, Active: boolean, Type: string }[]
 }
 
 export default class ConfigurationService {
   idmConfiguration: IDMConfiguration | undefined
   idmConfiguration$: Subject<IDMConfiguration> | undefined
+
+  getConfiguration<T>(configurationUrl: string): Promise<T> {
+    return fetch(configurationUrl).then(resp => resp.json())
+  }
 
   getIDMConfiguration(idmApiRoot: string) {
     if (this.idmConfiguration) return of(this.idmConfiguration)

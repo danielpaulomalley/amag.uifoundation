@@ -18,7 +18,7 @@ export default class ApiService {
     }
   }
 
-  get(module: AMAGModule, path: string) {
+  get<T>(module: AMAGModule, path: string): Promise<T> {
     const p = this.rootUrls[module] + path
     return fetch(p).then(resp => {
       if (!resp.ok) throw "error"
@@ -26,7 +26,7 @@ export default class ApiService {
     })
   }
 
-  post(module: AMAGModule, path: string) {
+  post<T>(module: AMAGModule, path: string): Promise<T> {
     const p = this.rootUrls[module] + path
     return fetch(p, {
       method: 'POST'

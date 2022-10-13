@@ -1,5 +1,7 @@
 * { box-sizing: border-box; }
-
+$theme-color1: #414141;
+$theme-color2: #1e7c8e;
+$theme-color3: #e63e2c;
 html, body {
   height: 100%;
   padding: 0;
@@ -7,9 +9,13 @@ html, body {
   font-family: sans-serif;
 }
 #root { height: 100%; overflow: hidden; }
-h1, h2, h3 {
-  color: #024f5d;
-}
+.amag-theme-color1 { color: $theme-color1; }
+.amag-theme-color2 { color: $theme-color2; }
+.amag-theme-color3 { color: $theme-color3; }
+.amag-theme-bg1 { background-color: $theme-color1; }
+.amag-theme-bg2 { background-color: $theme-color2; }
+.amag-theme-bg3 { background-color: $theme-color3; }
+h1, h2, h3 { color: $theme-color2; }
 h2 { font-size: 1.75rem; }
 h1, h2, h3, h4, h5, h6 {
   margin-top: 4px;
@@ -17,8 +23,11 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.1;
   font-weight: 500;
 }
+a {
+  text-decoration: none;
+}
 .navbar-default {
-  background-color: #186473;
+  background-color: $theme-color2;
   font-family: sans-serif;
   font-size: 14px;
   ul { padding: 0; margin: 0; }
@@ -31,9 +40,8 @@ h1, h2, h3, h4, h5, h6 {
     display: inline-block;
     padding: 15px 15px 17px 15px;
     color: #FFF;
-    text-decoration: none;
-    &:hover { background-color: #414141; }
-    &.active { background-color: #414141; }
+    &:hover { background-color: $theme-color1; }
+    &.active { background-color: $theme-color1; }
   }
 }
 
@@ -47,8 +55,8 @@ h1, h2, h3, h4, h5, h6 {
     flex-grow: 1;
     overflow: auto;
   }
-  .page-header { padding: 0 15px; }
-
+  .amag-page-header { padding: 0 15px; }
+  .amag-page-body { padding: 0 15px; }
 }
 
 
