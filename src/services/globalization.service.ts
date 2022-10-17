@@ -1,6 +1,5 @@
 import Globalize from 'globalize'
 import capitalize from "lodash.capitalize";
-import { Observable, Subject, of } from "rxjs";
 import { AMAGModule } from '../models';
 
 const REQUIRED_SUPPLEMENTAL = ["likelySubtags", "plurals", "timeData", "weekData"];
@@ -21,13 +20,14 @@ const LOCALES_JSON = CLDRDATA_URI + "locales.json";
 const DEFAULT_MAIN_LOCALE = "en";
 const DEFAULT_MESSAGES_LOCALE = "en-US";
 
-
+const UICORE_GLOBALIZATION = "/globalization/lib/uicore/"
 const JSON_URLS: {[key in AMAGModule]: string} = {
   [AMAGModule.CORE]: "", // no ui
   [AMAGModule.IDM]: "/globalization/idm/ui/",
   [AMAGModule.CAC]: "/globalization/cac/ui/",
   [AMAGModule.VMS]: "/globalization/vms/ui/",
-  [AMAGModule.SAMA]: "/globalization/sama/ui/"
+  [AMAGModule.SAMA]: "/globalization/sama/ui/",
+  [AMAGModule.SYMMETRY]: ""
 }
 
 
@@ -69,11 +69,12 @@ export default class GlobalizationService {
         Globalize.load([...suppJsons, ...mainJsons])
         Globalize.locale(mainLocale)
         const url = `${cdnUrl}${JSON_URLS[module]}${locale}.json`
-        return this._fetchJSON(url)
+        const coreUi = `${cdnUrl}${UICORE_GLOBALIZATION}${locale}.json`
+        return Promise.all([this._fetchJSON(url), this._fetchJSON(coreUi)])
       })
       .then(resp => {
         const messages = {} as {[locale: string]: Object}
-        messages[mainLocale] = resp
+        messages[mainLocale] = {...resp[0], ...resp[1]}
         Globalize.loadMessages(messages)
         this.globalizer = Globalize(mainLocale)
         return true

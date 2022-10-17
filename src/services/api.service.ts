@@ -1,35 +1,29 @@
 import { AMAGModule } from "../models";
 
 export default class ApiService {
-  rootUrls: {[key in AMAGModule]: string}
+  _rootUrls: {[key in AMAGModule]: string}
   constructor(
-    idmApiRoot: string,
-    cacApiRoot: string,
-    vmsApiRoot: string,
-    coreApiRoot: string,
-    samaApiRoot: string
+    rootUrls: {[key in AMAGModule]: string}
   ) {
-    this.rootUrls = {
-      [AMAGModule.CORE]: coreApiRoot,
-      [AMAGModule.IDM]: idmApiRoot,
-      [AMAGModule.CAC]: cacApiRoot,
-      [AMAGModule.VMS]: vmsApiRoot,
-      [AMAGModule.SAMA]: samaApiRoot
-    }
+    this._rootUrls = rootUrls
   }
 
   get<T>(module: AMAGModule, path: string): Promise<T> {
-    const p = this.rootUrls[module] + path
+    const p = this._rootUrls[module] + path
     return fetch(p).then(resp => {
       if (!resp.ok) throw "error"
       return resp.json()
     })
   }
 
-  post<T>(module: AMAGModule, path: string): Promise<T> {
-    const p = this.rootUrls[module] + path
+  post<T>(module: AMAGModule, path: string, body: object = {}): Promise<T> {
+    const p = this._rootUrls[module] + path
     return fetch(p, {
-      method: 'POST'
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
     }).then(resp => {
       if (!resp.ok) throw "error"
       return resp.json()

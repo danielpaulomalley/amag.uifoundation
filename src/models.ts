@@ -3,5 +3,6 @@ export enum AMAGModule {
   IDM,
   CAC,
   VMS,
-  SAMA
+  SAMA,
+  SYMMETRY
 }

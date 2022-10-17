@@ -1,6 +1,5 @@
 import { AMAGModule } from "../models"
 import ApiService from "./api.service"
-import ConfigurationService, { IDMConfiguration } from "./configuration.service"
 import GlobalizationService from "./globalization.service"
 
 const apiBase = `//${window.location.host}`
@@ -20,63 +19,74 @@ const getUrlParamValue = (key: string) => {
 }
 
 const loadThemeStyles = () => {
-  if (!data.themePath) return
+  if (!configData.themePath) return
   const ts = new Date().getTime() / 1000 | 1
   const l = document.createElement("link")
   l.type = "text/css"
   l.rel = "stylesheet"
-  l.href = `${data.themePath}?${ts}`
+  l.href = `${configData.themePath}?${ts}`
   document.body.appendChild(l)
 }
 
-const configurationService = new ConfigurationService()
-const globalizationService = new GlobalizationService()
-
-const data = {
-  cacApiRoot: `${apiBase}/AMAG.CAC.WebApi/api/`,
-  vmsApiRoot: `${apiBase}/G4S.VMS.WebApi/api/`,
-  idmApiRoot: `${apiBase}/G4S.IdentityManagement.WebApi/api/`,
-  coreApiRoot: `${apiBase}/G4S.Core.WebApi/api/`,
-  symmetryApiRoot: `${apiBase}/AMAG.Symmetry.WebApi/api/`,
-  samaApiRoot: `${apiBase}/AMAG.SAMA.WebApi/api/`,
+const configData = {
   activeLocale: getUrlParamValue("language"),
   cdnUrl: getUrlParamValue("cdnUrl"),
   globalizationCacheKey: getUrlParamValue("globalizationCacheKey"),
   themePath: getUrlParamValue("themePath")
 }
 
-const apiService = new ApiService(data.idmApiRoot, data.cacApiRoot, data.vmsApiRoot, data.coreApiRoot, data.samaApiRoot)
-let idmConfig: IDMConfiguration
+const apiRoots: {[key in AMAGModule]: string} = {
+  [AMAGModule.CAC]: `${apiBase}/AMAG.CAC.WebApi/api/`,
+  [AMAGModule.CORE]: `${apiBase}/G4S.Core.WebApi/api/`,
+  [AMAGModule.IDM]: `${apiBase}/G4S.IdentityManagement.WebApi/api/`,
+  [AMAGModule.SAMA]: `${apiBase}/Amag.SAMA.WebApi/api/`,
+  [AMAGModule.SYMMETRY]: `${apiBase}/AMAG.Symmetry.WebApi/api/`,
+  [AMAGModule.VMS]: `${apiBase}/G4S.VMS.WebApi/api/`
+}
+
+const globalizationService = new GlobalizationService()
+
+const apiService = new ApiService(apiRoots)
 
 const Service = {
   init: (module: AMAGModule) => {
-    return new Promise<void>((resolve) => {
-      configurationService.getIDMConfiguration(data.idmApiRoot).subscribe(config => {
-        idmConfig = config
-        if (!data.activeLocale) data.activeLocale = config.UserLanguage ?? "en-US"
-        if (!data.cdnUrl) data.cdnUrl = config.CdnUrl
-        globalizationService.init(data.cdnUrl, module, data.activeLocale).then(() => resolve())
-      })
+    const url = apiRoots[AMAGModule.IDM] + "configuration"
+    return fetch(url)
+    .then(resp => resp.json())
+    .then((c: IDMConfiguration) => {
+      if (!configData.activeLocale) configData.activeLocale = c.UserLanguage ?? "en-US"
+      if (!configData.cdnUrl) configData.cdnUrl = c.CdnUrl
+      return globalizationService.init(configData.cdnUrl, module, configData.activeLocale)
     })
+    .then(() => true)
   },
 
   getMessage: (key: string, params?: string[] | Object | string, formatter?: (str: string) => string) => {
     return globalizationService.getMessage(key, params, formatter)
   },
-
   getMessageOnly: (key: string, params?: string[] | Object | string, formatter?: (str: string) => string) => {
     return globalizationService.getMessage(key, params, formatter).message
   },
-
-
-  get: (module: AMAGModule, path: string) => apiService.get(module, path),
-  post: (module: AMAGModule, path: string) => apiService.post(module, path),
-
-  getConfiguration: () => idmConfig
+  get: <T>(module: AMAGModule, path: string) => apiService.get<T>(module, path),
+  post: <T>(module: AMAGModule, path: string, body = {}) => apiService.post<T>(module, path, body),
 
 }
 
 // load theme styles as soon as UIService is used
 loadThemeStyles()
 
+
 export default Service
+
+
+interface IDMConfiguration {
+  AddressTypes: {Name: string, Value: string, IsLeftToRight: boolean}[]
+  AllowImpersonation: boolean
+  CdnUrl: string
+  CustomThemeConfiguration: { ThemeFolderUri: string, FirstColor: string, SecondaryColor: string, ThirdColor: string }
+  DefaultLanguage: string
+  GroupId: string
+  UseEmailAddressAsUserName: boolean
+  UserLanguage: string
+  UdfDefinitions: { Id: string, Name: string, Active: boolean, Type: string }[]
+}
