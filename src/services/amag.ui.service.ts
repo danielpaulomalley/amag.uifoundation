@@ -47,6 +47,7 @@ const apiRoots: {[key in AMAGModule]: string} = {
 const globalizationService = new GlobalizationService()
 
 const apiService = new ApiService(apiRoots)
+let idmConfiguration: IDMConfiguration
 
 const Service = {
   init: (module: AMAGModule) => {
@@ -54,12 +55,15 @@ const Service = {
     return fetch(url)
     .then(resp => resp.json())
     .then((c: IDMConfiguration) => {
+      idmConfiguration = c
       if (!configData.activeLocale) configData.activeLocale = c.UserLanguage ?? "en-US"
       if (!configData.cdnUrl) configData.cdnUrl = c.CdnUrl
       return globalizationService.init(configData.cdnUrl, module, configData.activeLocale)
     })
     .then(() => true)
   },
+
+  getIdmConfiguration: () => idmConfiguration,
 
   getMessage: (key: string, params?: string[] | Object | string, formatter?: (str: string) => string) => {
     return globalizationService.getMessage(key, params, formatter)
@@ -89,4 +93,7 @@ interface IDMConfiguration {
   UseEmailAddressAsUserName: boolean
   UserLanguage: string
   UdfDefinitions: { Id: string, Name: string, Active: boolean, Type: string }[]
+  EmployeeConfiguration: {
+    UserDefinedFields?: {[key: string]: string}
+  }
 }
