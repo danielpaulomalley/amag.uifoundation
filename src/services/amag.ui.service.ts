@@ -86,6 +86,7 @@ export default Service
 interface IDMConfiguration {
   AddressTypes: {Name: string, Value: string, IsLeftToRight: boolean}[]
   AllowImpersonation: boolean
+  PhoneTypes: {Name: string, Value: string, IsLeftToRight: boolean}[]
   CdnUrl: string
   CustomThemeConfiguration: { ThemeFolderUri: string, FirstColor: string, SecondaryColor: string, ThirdColor: string }
   DefaultLanguage: string
@@ -96,4 +97,5 @@ interface IDMConfiguration {
   EmployeeConfiguration: {
     UserDefinedFields?: {[key: string]: string}
   }
+  EmployeeSecurityRoles: {Role: string, AllSecurables: boolean}[]
 }

@@ -25,8 +25,10 @@ export default class ApiService {
       },
       body: JSON.stringify(body)
     }).then(resp => {
-      if (!resp.ok) throw "error"
+      if (!resp.ok) {
+        return null; // toast error message
+      }
       return resp.json()
-    })
+    }).catch(() => null)
   }
 }
