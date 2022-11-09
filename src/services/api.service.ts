@@ -31,4 +31,21 @@ export default class ApiService {
       return resp.json()
     }).catch(() => null)
   }
+
+  put<T>(module: AMAGModule, path: string, body: object = {}): Promise<T> {
+    const p = this._rootUrls[module] + path
+    return fetch(p, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    }).then(resp => {
+      if (!resp.ok) {
+        return null; // toast error message
+      }
+      return resp.json()
+    }).catch(() => null)
+  }
+
 }
