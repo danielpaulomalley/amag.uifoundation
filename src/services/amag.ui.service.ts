@@ -73,7 +73,8 @@ const Service = {
   },
   get: <T>(module: AMAGModule, path: string) => apiService.get<T>(module, path),
   post: <T>(module: AMAGModule, path: string, body = {}) => apiService.post<T>(module, path, body),
-  put: <T>(module: AMAGModule, path: string, body = {}) => apiService.put<T>(module, path, body)
+  put: <T>(module: AMAGModule, path: string, body = {}) => apiService.put<T>(module, path, body),
+  delete: (module: AMAGModule, path: string) => apiService.delete(module, path)
 }
 
 // load theme styles as soon as UIService is used

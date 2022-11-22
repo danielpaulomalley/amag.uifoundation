@@ -48,4 +48,13 @@ export default class ApiService {
     }).catch(() => null)
   }
 
+  delete(module: AMAGModule, path: string): Promise<boolean> {
+    const p = this._rootUrls[module] + path
+    return fetch(p, {
+      method: 'DELETE'
+    }).then(resp => {
+      return true
+    })
+  }
+
 }
