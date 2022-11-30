@@ -71,6 +71,9 @@ const Service = {
   getMessageOnly: (key: string, params?: string[] | Object | string, formatter?: (str: string) => string) => {
     return globalizationService.getMessage(key, params, formatter).message
   },
+  cldr: (key: string) => {
+    return globalizationService.cldr(key).message
+  },
   get: <T>(module: AMAGModule, path: string) => apiService.get<T>(module, path),
   post: <T>(module: AMAGModule, path: string, body = {}) => apiService.post<T>(module, path, body),
   put: <T>(module: AMAGModule, path: string, body = {}) => apiService.put<T>(module, path, body),

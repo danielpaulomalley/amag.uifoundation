@@ -34,6 +34,7 @@ const JSON_URLS: {[key in AMAGModule]: string} = {
 interface AMAGGlobalizer {
   getMessage: (key: string, params?: string | Object | string[], formatter?: (str: string) => string | string) => { message: string, error: string | null},
   getMessageOnly: (key: string, params?: string | Object | string[], formatter?: (str: string) => string | string) => string
+  cldr: (key: string) => string
   getMessageOrDefault: (key: string, defaultValue: string, params?: string | Object | string[], formatter?: (str: string) => string | string) => string
   getRawMessage: (key: string) => any // 3rd party globalizer returns any, no way around this one
   hasParameters: (key: string) => boolean
@@ -88,6 +89,20 @@ export default class GlobalizationService {
     try {
       retVal = this.globalizer.messageFormatter(val)((params = params ? params : {}))
     } catch(err: unknown) {
+      console.log(err)
+    }
+    return {
+      message: retVal,
+      error: null
+    }
+  }
+
+  cldr(key: string) {
+    if (!this.globalizer) return {message: key, error: "globalizer has not been initialized"}
+    let retVal = key
+    try {
+      retVal = this.globalizer.cldr.main(key)
+    } catch (err: unknown) {
       console.log(err)
     }
     return {
