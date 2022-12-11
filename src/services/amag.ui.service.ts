@@ -102,4 +102,14 @@ interface IDMConfiguration {
     UserDefinedFields?: {[key: string]: string}
   }
   EmployeeSecurityRoles: {Role: string, AllSecurables: boolean}[]
+  VisitorConfiguration: {
+    Citizenship: "Show" | "Hide" | "Required",
+    Department: "Show" | "Hide" | "Required",
+    EmployeeCategory: "Show" | "Hide" | "Required",
+    Gender: "Show" | "Hide" | "Required",
+    MiddleName: "Show" | "Hide" | "Required",
+    SecondaryPhone: "Show" | "Hide" | "Required",
+    Title: "Show" | "Hide" | "Required",
+    UserDefinedFields: {[key: string]: string}
+  }
 }
