@@ -12,6 +12,7 @@
     "moduleResolution": "node",
 		"outDir": "dist",
 		//"skipLibCheck": true,
+    "lib": ["DOM"],
     "sourceMap": true,
     "strict": true,
     "target": "es5",

@@ -26,10 +26,12 @@ export default class ApiService {
       body: JSON.stringify(body)
     }).then(resp => {
       if (!resp.ok) {
-        return null; // toast error message
+        throw resp
       }
       return resp.json()
-    }).catch(() => null)
+    }).catch((e: any) => {
+      return e.json()
+    })
   }
 
   put<T>(module: AMAGModule, path: string, body: object = {}): Promise<T> {
@@ -42,7 +44,9 @@ export default class ApiService {
       body: JSON.stringify(body)
     }).then(resp => {
       if (!resp.ok) {
-        return null; // toast error message
+        return resp.json().then(r => {
+          throw r.ResponseStatus.Message
+        })
       }
       return resp.json()
     }).catch(() => null)
@@ -53,8 +57,9 @@ export default class ApiService {
     return fetch(p, {
       method: 'DELETE'
     }).then(resp => {
+      if (!resp.ok) throw resp
       return true
-    })
+    }).catch(() => false)
   }
 
 }
