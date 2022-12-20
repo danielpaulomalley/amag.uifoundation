@@ -28,9 +28,11 @@ export default class ApiService {
       if (!resp.ok) {
         throw resp
       }
-      return resp.json()
-    }).catch((e: any) => {
-      return e.json()
+      return resp.json().catch(e => {
+        return ""
+      })
+    }).catch((e) => {
+      throw "error"
     })
   }
 

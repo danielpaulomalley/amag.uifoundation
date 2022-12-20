@@ -86,14 +86,15 @@ export default class GlobalizationService {
     if (!this.globalizer) return { message: key, error: "globalizer has not been initialized" }
     const val = key.toLowerCase();
     let retVal = key;
+    let err = null
     try {
       retVal = this.globalizer.messageFormatter(val)((params = params ? params : {}))
-    } catch(err: unknown) {
-      console.log(err)
+    } catch(e: unknown) {
+      err = e
     }
     return {
       message: retVal,
-      error: null
+      error: err
     }
   }
 
